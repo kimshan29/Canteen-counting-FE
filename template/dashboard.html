@@ -53,22 +53,53 @@
   </h1>
   <div class="box"><br>
     <div class="box-body">
-      <div class="col-md-12">
-        <div class="col-md-6">
-          <div id="chartDaily"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <div id="chartDaily"></div>
 
-        </div>
-        <div class="col-md-6">
-          <div id="chartWeekly"></div>
+          </div>
+          <div class="col-md-6">
+            <div id="chartWeekly"></div>
+          </div>
         </div>
       </div>
-      <div class="col-md-12">
-        <div class="col-md-6">
-          <div id="chartMonthly"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-6 text-center">
+            <form class="form-inline">
+              <div class="form-group">
+                <label>Bulan</label>
+                <div class="input-group">
+                  <select class="form-control" ng-model="bulan" ng-options="item.id as item.bulan for item in listBulan" ng-change="getMonthly(bulan)"></select>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="user.input.startDate.$$periodeAwalOpened = true">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </form>
+            <div id="chartMonthly"></div>
 
-        </div>
-        <div class="col-md-6">
-          <div id="chartYearly"></div>
+          </div>
+          <div class="col-md-6 text-center">
+            <form class=" form-inline">
+              <div class="form-group">
+                <label>Tahun</label>
+                <div class="input-group">
+                  <input type='text' ng-model="tahun" id='searchTahun' ng-change="getYearly(tahun)" class="form-control" style="display:-webkit-inline-box !important;width: 150px;" />
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="user.input.startDate.$$periodeAwalOpened = true">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                  </span>
+                </div>
+
+              </div>
+            </form>
+            <div id="chartYearly"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -80,10 +111,10 @@
   </div>
 </section>
 <script>
-  $('#tglSurat').datepicker({
-    autoclose: true
-  });
-  $('#tglPemberianData').datepicker({
+  $("#searchTahun").datepicker({
+    format: " yyyy", // Notice the Extra space at the beginning
+    viewMode: "years",
+    minViewMode: "years",
     autoclose: true
   });
 </script>

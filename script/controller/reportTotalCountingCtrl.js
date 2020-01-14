@@ -2,6 +2,7 @@ mainApp.controller("reportTotalCountingCtrl", function ($scope, $routeParams, $q
     $scope.Helper = Helper;
     $scope.currentUser = {};
 
+    $scope.master = []
 
     $scope.formLoad = function () {
         try {
@@ -11,6 +12,7 @@ mainApp.controller("reportTotalCountingCtrl", function ($scope, $routeParams, $q
         }
 
         $scope.renderList();
+        $scope.getMasterRole();
 
     }
 
@@ -18,95 +20,54 @@ mainApp.controller("reportTotalCountingCtrl", function ($scope, $routeParams, $q
 
 
     $scope.renderList = function () {
-        // var apiUrl = "/api/vendor";
-        // HttpRequest.get(apiUrl).success(function (response) {
-        //     $scope.listVendor = response.items;
-        //     console.log(JSON.stringify($scope.listVendor));
+        var apiUrl = "/api/report/reportTotalCounting";
+        HttpRequest.get(apiUrl).success(function (response) {
+            $scope.listData = response.items;
+            console.log(JSON.stringify($scope.listData));
 
-        // })
+        })
 
-        $scope.listData = [{
-                id: "1",
-                date: "26-07-2019",
-                status: "Employee",
-                namaLengkap: "Rama Rangga Ramadhan",
-                vendor: "Shandy",
-                menuUtama: "Opor Ayam",
-                menuTambahan: "Tempe",
-                sayur: "Tumis Kangkung",
-                buah: "Melon",
-                totalKalori: "200",
 
-            },
-            {
-                id: "2",
-                date: "26-07-2019",
-                status: "Employee",
-                namaLengkap: "Rama Rangga Ramadhan",
-                vendor: "Shandy",
-                menuUtama: "Opor Ayam",
-                menuTambahan: "Tempe",
-                sayur: "Tumis Kangkung",
-                buah: "Melon",
-                totalKalori: "200",
-
-            },
-            {
-                id: "3",
-                date: "26-07-2019",
-                status: "Employee",
-                namaLengkap: "Rama Rangga Ramadhan",
-                vendor: "Shandy",
-                menuUtama: "Opor Ayam",
-                menuTambahan: "Tempe",
-                sayur: "Tumis Kangkung",
-                buah: "Melon",
-                totalKalori: "200",
-
-            }
-        ]
 
         // console.log(JSON.stringify($scope.listVendor));
     }
 
-    $scope.eventClickSave = function () {
-        console.log(JSON.stringify($scope.form));
-        swal("Data Berhasil Disimpan", {
-            icon: "success",
-        });
+    $scope.getByRole = function (startDate, endDate, idRole) {
+        console.log(idRole);
 
-    }
-    $scope.eventClickEdit = function (id) {
-        $scope.form = {
-            "id": "1",
-            "namaVendor": "Kantin Go Green",
-            "initial": "KGG",
-            "alamatVendor": "Bogor",
-            "namaPic": "Shandy",
-            "telepon": "093475994",
-            "teleponPic": "834995003",
-            "tglBergabung": "2019-12-10T00:00:00.000Z"
-        }
-    }
+        if (startDate == null && endDate == null) {
+            swal("", "Tanggal Awal & Tanggal Akhir Belum di Pilih", "info");
+        } else {
+            var dAwal = new Date(Date.parse(startDate));
+            var date = String(dAwal.getDate()).padStart(2, '0');
+            $scope.tglAwal = date + "-" + dAwal.getMonth() + 1 + "-" + dAwal.getFullYear();
 
-    $scope.eventClickDelete = function (id) {
-        swal({
-                title: "Delete!!!",
-                text: "Yakin Ingin Menghapus Data ini?",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+            var dAkhir = new Date(Date.parse(endDate));
+            var dateAkhir = String(dAkhir.getDate()).padStart(2, '0');
+
+            $scope.tglAkhir = dateAkhir + "-" + dAkhir.getMonth() + 1 + "-" + dAkhir.getFullYear();
+
+            var apiUrl = "/api/report/reportTotalCounting?startDate=" + $scope.tglAwal + "&endDate=" + $scope.tglAkhir + "&idRole=" + idRole;
+            console.log(apiUrl);
+
+            HttpRequest.get(apiUrl).success(function (response) {
+                $scope.listData = response.items;
+                console.log(JSON.stringify($scope.listData));
+
             })
-            .then((willDelete) => {
-                if (willDelete) {
-                    swal("Data Berhasil Dihapus!", {
-                        icon: "success",
-                    });
-                } else {
-                    // swal("Data To");
-                }
-            });
+        }
+
     }
+    $scope.getMasterRole = function () {
+        // alert("hallo")
+        var apiUrl = "/api/role";
+        HttpRequest.get(apiUrl).success(function (response) {
+            $scope.master.role = response.items;
+            console.log($scope.master.role);
+
+        })
+    }
+
 
     $scope.exportToExcel = function (tableId) { // ex: '#my-table'
         var exportHref = Excel.tableToExcel(tableId, 'HistoryProjectMilestone');
@@ -115,16 +76,7 @@ mainApp.controller("reportTotalCountingCtrl", function ($scope, $routeParams, $q
         }, 100); // trigger download
     }
 
-    $scope.clearForm = function () {
-        $scope.form.id = "";
-        $scope.form.namaVendor = "";
-        $scope.form.initial = "";
-        $scope.form.alamatVendor = "";
-        $scope.form.namaPic = "";
-        $scope.form.telepon = "";
-        $scope.form.teleponPic = "";
-        $scope.form.tglBergabung = "";
-    }
+
 
     $scope.formLoad();
 })
